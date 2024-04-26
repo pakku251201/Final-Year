@@ -23,6 +23,7 @@ df = pd.DataFrame(columns=["Title", "Location", "Company", "Link", "Description"
 console = Console()
 table = Table(show_header=True, header_style="bold")
 
+
 # get user input
 # console.print("Enter Job Title :", style="bold green", end=" ")
 # inputJobTitle = input()
