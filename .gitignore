@@ -1,0 +1,11 @@
+# created by virtualenv automatically
+
+env/__pycache__
+env/bin
+env/chromedriver-Darwin
+env/chromedriver-Linux32
+env/chromedriver-Linux64
+env/chromedriver-Windows
+env/include/*
+env/lib
+.DS_Store

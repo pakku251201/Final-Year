@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Find Your Dream Job</h1>
+        <p>Search for jobs by keywords, experience, and location</p>
+    </div>
+    <div class="search-form">
+        <form action="jobpg" method="POST">
+            <input type="text" name="keywords" id="keywords" placeholder="Keywords (e.g., job title)">
+            <select name="experience" id="experience">
+                <option value="">Select Experience</option>
+                <!-- Generate options dynamically -->
+                <script>
+                    for (var i = 0; i <= 10; i++) {
+                        document.write("<option value='" + i + "'>" + i + " year" + (i == 1 ? "" : "s") + "</option>");
+                    }
+                </script>
+            </select>
+            <input type="text" name="location" id="location" placeholder="Location">
+            <input type="submit" value="Search"/>
+        </form>
+    </div>
+    <!-- <div id="searchResults" class="search-results">
+        <h7>Output</h7>
+        <pre>{{console_result}}</pre>
+    </div> -->
+    <div id="searchResults" class="search-results">
+        <h2>Job Search Results</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <!-- <th>Description</th> -->
+                    <th>Link</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {% for item in console_result %}
+                <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.company }}</td>
+                        <td>{{ item.location }}</td>
+                        <!-- <td>{{ item.desc }}</td> -->
+                        <td><a href="{{ item.link }}" target="_blank">Link</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+        </table>
+    </div>
+    <div>
+            <button type="button" id="download-button" onclick="download">Download</button>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(function() {
+        // Handle form submission
+        $('#searchForm').submit(function(event) {
+            // Prevent default form submission
+            event.preventDefault();
+            
+            // Get form data
+            var formData = $(this).serialize();
+
+            // Send AJAX request
+            $.ajax({
+                type: 'GET',
+                url: '/search',
+                data: formData,
+                success: function(response) {
+                    // Update search results area with the returned data
+                    $('#searchResults').html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        function download(){
+            console.log('comes here')
+        }
+
+        // Define location data (suggestions)
+        var locations = [
+            "Mumbai, Maharashtra",
+            "Delhi",
+            "Bangalore, Karnataka",
+            "Hyderabad, Telangana",
+            "Ahmedabad, Gujarat",
+            "Chennai, Tamil Nadu",
+            "Kolkata, West Bengal",
+            "Surat, Gujarat",
+            "Pune, Maharashtra",
+            "Jaipur, Rajasthan",
+            "Lucknow, Uttar Pradesh",
+            "Kanpur, Uttar Pradesh",
+            "Nagpur, Maharashtra",
+            "Indore, Madhya Pradesh",
+            "Thane, Maharashtra",
+            "Bhopal, Madhya Pradesh",
+            "Visakhapatnam, Andhra Pradesh",
+            "Pimpri-Chinchwad, Maharashtra",
+            "Patna, Bihar",
+            "Vadodara, Gujarat"
+            // Add more locations as needed
+        ];
+
+        // Enable autocomplete for location input field
+        $("#location").autocomplete({
+            source: locations
+        });
+    });
+
+    const downloadButton = document.getElementById("download-button");
+    const downloadForm = document.getElementById("download-form");
+
+    downloadButton.addEventListener("click", function() {
+        // Submit the form using a POST request
+        downloadForm.submit();
+    });
+</script>
+
+</body>
+</html>
+
+<style>
+    /* Reset styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 16px;
+    color: #666;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search-form form {
+    display: flex;
+    width: 100%;
+}
+
+.search-form input[type="text"],
+.search-form select {
+    flex: 1;
+    padding: 12px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.search-form button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 20px;
+    cursor: pointer;
+    outline: none;
+}
+
+.search-results {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-results h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.search-results p {
+    font-size: 16px;
+    color: #666;
+}
+
+</style>
