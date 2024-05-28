@@ -86,23 +86,26 @@ def login():
 
 @app.route("/jobpg", methods=['POST', 'GET'])
 async def jobpg():
-    print('comes here', request.method)
     if not "email" in session:
-        return redirect(url_for("home.html"))
+        print('sjdibksd')
+        return render_template("home.html", message='Please Login')
     else:
         if request.method=="POST":
             keywords=request.form["keywords"]
             experience=request.form["experience"]
             location=request.form["location"]
-            console_result = await scraper.scrapeLinkedin(keywords,location) 
-            return render_template("jobpg.html", console_result = console_result)
+            counter = request.form['counter']
+            if(len(counter) == 0):
+                counter = '0'
+            [linkedIn_result,counter] = await scraper.scrapeLinkedin(keywords,location,counter) 
+            [naukri_result,counter] = await scraper.scrapeNaukri(keywords,location,counter) 
+            # [console_result,counter] = [[{'title': 'Business Analyst', 'location': 'Chennai, Tamil Nadu, India', 'company': 'HTC Global Services', 'desc': 'Education: Bachelor’s degree in Computer Science, Information Systems, or Finance• Role Specific Experience: 3+ years of relevant technical and business work experience• Banking & Financial domain experience, along with knowledge of risk management, familiarity with concepts of finance and accounting• Proficiency in MS Excel• Experience in defining and implementing technology solutions for a major financial institution• Extensive experience as a Business Analyst for a large financial institution • Extensive experience in gathering business requirements and developing functional specifications with special emphasis on use cases, defining test cases, and providing user training and support• Extensive experience with various system development lifecycle methodologies and tailoring the artifacts to those methodologies• Solution-oriented, detailed-focused, showing strong analytical and organization skills• Familiarity with relational databases / RDMS• Experience with writing simple SQL statements (mostly SELECT – with aim to analyze datasets)• Familiarity with any object-oriented programming language is a plus (c# preferred)', 'link': 'https://in.linkedin.com/jobs/view/business-analyst-at-htc-global-services-3881422508?position=17&pageNum=0&refId=z4jy4%2FbFvjbbFvUEJfE14g%3D%3D&trackingId=%2B1u09zq6ZmGQCjkggRemFw%3D%3D&trk=public_jobs_jserp-result_search-card'}],60]
+            console_result = linkedIn_result + naukri_result
+            return render_template("jobpg.html", console_result = console_result, counter = counter, keywords= keywords, location = location)
         else:
             return render_template("jobpg.html") 
 
-@app.route("/download")
-def download():
-    file_path = f"{inputJobTitle}_{inputJobLocation}_jobs.xlsx"
-    return send_file(file_path, as_attachment=True)
 
 if __name__ == '__main__':
+    print('starts')
     app.run(debug=True)
